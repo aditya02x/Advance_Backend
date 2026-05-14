@@ -1,23 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
+import productRoute from "./routes/product.route.js";
+
 dotenv.config();
-import productroute from "./routes/product.route.js";
-
-
 
 const app = express();
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
 
+// Middlewares
 app.use(express.json());
-app.use("/api/v1/product",productroute)
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
-
-
+// Routes
+app.use("/api/v1/products", productRoute);
 
 export default app;
-
