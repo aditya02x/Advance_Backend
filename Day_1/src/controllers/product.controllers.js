@@ -5,7 +5,7 @@ export const craeteProduct = async (req,res)=>{
         const {title,price,category,stock}= req.body;
 
 
-        const newProduct = await product.create({
+        const newProduct = await Product.create({
             title,
             price,
             category,
@@ -36,7 +36,7 @@ export const getAllProducts = async (req,res)=>{
             data:products
         })
 
-        
+
         
     } catch (error) {
         res.status(500).json({message:"Server Error"})
