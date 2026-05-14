@@ -33,6 +33,15 @@ export const getAllProducts = async (req,res)=>{
     try {
         console.log(req.query.sort)
        const sort = req.query.sort || "-createdAt"; 
+       const category = req.query.category;
+
+       const query = {}
+
+         if(category){
+            query.category = category;
+         }
+         
+
         
   
 
@@ -41,7 +50,10 @@ export const getAllProducts = async (req,res)=>{
         const page = parseInt(req.query.page) || 1;
         const skip = (page - 1 )*limit;
 
-        const products = await Product.find().sort(sort).limit(limit).skip(skip);
+        const products = await Product.find({ category })
+        .sort(sort)
+        .limit(limit)
+        .skip(skip);
         res.status(200).json({
             message:"Products fetched successfully",
             data:products
