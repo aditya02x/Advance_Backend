@@ -1,4 +1,4 @@
-import product from '../models/product.model.js';
+import Product from '../models/product.model.js';
 
 export const craeteProduct = async (req,res)=>{
     try {
@@ -17,7 +17,7 @@ export const craeteProduct = async (req,res)=>{
             message:"Product created successfully",
             data:newProduct
         })
-        await newProduct.save();
+        
         
     } catch (error) {
     res.status(500).json({message:"Server Error"})
