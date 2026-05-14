@@ -15,12 +15,16 @@ const productSchema = new mongoose.Schema({
     category:{
         required:[true,"Category is required"],
         type:String,
+
+        enum:["Mobiles","Laptops","Tablets","Accessories"],
     },
     stock:{
         required:[true,"Stock is required"],
         type:Number,
         min:[0,"Stock cannot be negative"],
     }
+},{
+    timestamps:true,
 })
 
 export default mongoose.model("Product",productSchema)
