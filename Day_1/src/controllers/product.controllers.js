@@ -1,3 +1,4 @@
+import { populate } from 'dotenv';
 import Product from '../models/product.model.js';
 
 export const createProduct = async (req,res)=>{
@@ -30,7 +31,12 @@ export const createProduct = async (req,res)=>{
 
 export const getAllProducts = async (req,res)=>{
     try {
-        const products = await Product.find();
+        console.log(req.query);
+        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page) || 1;
+        const skip = (page - 1 )*limit;
+
+        const products = await Product.find().limit(limit).skip(skip);
         res.status(200).json({
             message:"Products fetched successfully",
             data:products
