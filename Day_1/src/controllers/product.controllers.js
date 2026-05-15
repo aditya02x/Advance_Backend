@@ -71,3 +71,27 @@ export const getAllProducts = asynchandeler(
         
   
 })
+
+const updateProduct = asynchandeler(
+    async (req,res)=>{
+        const {id} = req.params;
+        const {title,price,category,stock} = req.body;
+
+        const product = await Product.findById(id);
+
+        if(!product){
+            return res.status(404).json({message:"Product not found"});
+        }
+
+        const updateProduct = await Product.findByIdAndUpdate(id,{
+            title,
+            price,
+            category,
+            stock
+        },{new:true})
+        res.status(200).json({
+            message:"Product updated successfully",
+            data:updateProduct
+        })
+    }
+)
