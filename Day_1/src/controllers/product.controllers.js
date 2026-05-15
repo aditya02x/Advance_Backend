@@ -56,11 +56,11 @@ export const getAllProducts = async (req,res)=>{
             return res.status(400).json({message:"Limit cannot be greater than 50 or less than 1"})
         }
         const page = parseInt(req.query.page) || 1;
-        if(page<1){
+        if(page<1 || isNaN(page)){
             return res.status(400).json({message:"Page cannot be less than 1"})
         }
         const skip = (page - 1 )*limit;
-        if(skip<0){
+        if(skip<0 || isNaN(skip)){
             return res.status(400).json({message:"Skip cannot be less than 0"})
         }
 
