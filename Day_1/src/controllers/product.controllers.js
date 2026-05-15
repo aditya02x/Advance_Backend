@@ -1,8 +1,10 @@
 import { populate } from 'dotenv';
 import Product from '../models/product.model.js';
+import asynchandeler from '../middleware/asynchandler.js';
 
-export const createProduct = async (req,res)=>{
-    try {
+export const createProduct = asynchandeler(
+    async (req,res)=>{
+
         const {title,price,category,stock}= req.body;
 
 
@@ -20,21 +22,18 @@ export const createProduct = async (req,res)=>{
         })
         
         
-    } catch (error) {
-    res.status(500).json({message:"Server Error"})
-    console.log(error);
-
-        
-    }
-}
+    } 
+) 
 
 
-export const getAllProducts = async (req,res)=>{
-    try {
-        console.log(req.query)
-       const sort = req.query.sort || "-createdAt"; 
-       const category = req.query.category;
-       const search = req.query.search;
+
+export const getAllProducts = asynchandeler(
+    async (req,res)=>{
+       
+            console.log(req.query)
+           const sort = req.query.sort || "-createdAt"; 
+           const category = req.query.category;
+           const search = req.query.search;
 
        const query = {}
 
@@ -45,12 +44,6 @@ export const getAllProducts = async (req,res)=>{
                 query.title = {$regex:search,$options:"i"}
             }
 
-         
-
-        
-  
-
-    
         const limit = parseInt(req.query.limit) || 10;
         if(limit>50 || limit<1){
             return res.status(400).json({message:"Limit cannot be greater than 50 or less than 1"})
@@ -76,8 +69,5 @@ export const getAllProducts = async (req,res)=>{
 
 
         
-    } catch (error) {
-        res.status(500).json({message:"Server Error"})
-        console.log(error);
-    }
-}
+  
+})
