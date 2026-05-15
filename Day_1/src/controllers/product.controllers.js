@@ -31,7 +31,7 @@ export const createProduct = async (req,res)=>{
 
 export const getAllProducts = async (req,res)=>{
     try {
-        console.log(req.query.sort)
+        console.log(req.query)
        const sort = req.query.sort || "-createdAt"; 
        const category = req.query.category;
        const search = req.query.search;
@@ -41,6 +41,10 @@ export const getAllProducts = async (req,res)=>{
          if(category){
             query.category = category;
          }
+            if(search){
+                query.title = {$regex:search,$options:"i"}
+            }
+
          
 
         
@@ -48,14 +52,23 @@ export const getAllProducts = async (req,res)=>{
 
     
         const limit = parseInt(req.query.limit) || 10;
+        if(limit>50){
+            return res.status(400).json({message:"Limit cannot be greater than 10"})
+        }
         const page = parseInt(req.query.page) || 1;
+        if(page<1){
+            return res.status(400).json({message:"Page cannot be less than 1"})
+        }
         const skip = (page - 1 )*limit;
+        if(skip<0){
+            return res.status(400).json({message:"Skip cannot be less than 0"})
+        }
 
-        const products = await Product.find({ category })
+        const products = await Product.find(query)
         .sort(sort)
         .limit(limit)
         .skip(skip)
-        .search(serach)
+        
         res.status(200).json({
             message:"Products fetched successfully",
             data:products
