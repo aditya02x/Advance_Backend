@@ -34,6 +34,7 @@ export const getAllProducts = async (req,res)=>{
         console.log(req.query.sort)
        const sort = req.query.sort || "-createdAt"; 
        const category = req.query.category;
+       const search = req.query.search;
 
        const query = {}
 
@@ -53,7 +54,8 @@ export const getAllProducts = async (req,res)=>{
         const products = await Product.find({ category })
         .sort(sort)
         .limit(limit)
-        .skip(skip);
+        .skip(skip)
+        .search(serach)
         res.status(200).json({
             message:"Products fetched successfully",
             data:products
