@@ -72,26 +72,51 @@ export const getAllProducts = asynchandeler(
   
 })
 
-const updateProduct = asynchandeler(
-    async (req,res)=>{
-        const {id} = req.params;
-        const {title,price,category,stock} = req.body;
+export const updateProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
 
-        const product = await Product.findById(id);
-
-        if(!product){
-            return res.status(404).json({message:"Product not found"});
-        }
-
-        const updateProduct = await Product.findByIdAndUpdate(id,{
-            title,
-            price,
-            category,
-            stock
-        },{new:true})
-        res.status(200).json({
-            message:"Product updated successfully",
-            data:updateProduct
-        })
+  const updatedProduct = await Product.findByIdAndUpdate(
+    id,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
     }
-)
+  );
+
+  if (!updatedProduct) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Product updated successfully",
+    data: updatedProduct,
+  });
+});
+
+export const deleteProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const deleteProduct = await Product.findByIdAndDelete(id,
+    {new: true,
+    runValidators: true,}
+    );
+  ;
+
+  if (!deleteProduct) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "Product deleted successfully",
+    data: deleteProduct,
+  });
+
+});
