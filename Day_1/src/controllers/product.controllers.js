@@ -52,8 +52,8 @@ export const getAllProducts = async (req,res)=>{
 
     
         const limit = parseInt(req.query.limit) || 10;
-        if(limit>50){
-            return res.status(400).json({message:"Limit cannot be greater than 10"})
+        if(limit>50 || limit<1){
+            return res.status(400).json({message:"Limit cannot be greater than 50 or less than 1"})
         }
         const page = parseInt(req.query.page) || 1;
         if(page<1){
