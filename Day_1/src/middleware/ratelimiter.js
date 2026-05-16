@@ -19,3 +19,5 @@ const ratelimiter = asynchandeler(
         }
     }
 )
+
+export default ratelimiter;
