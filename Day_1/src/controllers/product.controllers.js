@@ -9,6 +9,9 @@ export const createProduct = asynchandeler(
        
        
 
+        const newProduct = await Product.create({
+            title,
+            price,
             category,
             stock
         });
