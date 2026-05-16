@@ -52,7 +52,7 @@ export const getAllProducts = asynchandeler(
             return res.status(400).json({ message: "Skip cannot be less than 0" });
         }
 
-        const cachedKey = `products:${JSON.stringify(query)}:sort:${sort}:limit:${limit}:page:${page}`;
+        const cachedKey = req.originalUrl;
 
         const cachedProduct = await redisClient.get(cachedKey);
 
