@@ -1,122 +1,109 @@
-import { populate } from 'dotenv';
 import Product from '../models/product.model.js';
 import asynchandeler from '../middleware/asynchandler.js';
 
 export const createProduct = asynchandeler(
-    async (req,res)=>{
-
-        const {title,price,category,stock}= req.body;
-
+    async (req, res) => {
+        const { title, price, category, stock } = req.body;
 
         const newProduct = await Product.create({
             title,
             price,
             category,
             stock
-
-        })
+        });
 
         res.status(201).json({
-            message:"Product created successfully",
-            data:newProduct
-        })
-        
-        
-    } 
-) 
-
-
+            message: "Product created successfully",
+            data: newProduct
+        });
+    }
+);
 
 export const getAllProducts = asynchandeler(
-    async (req,res)=>{
-       
-            console.log(req.query)
-           const sort = req.query.sort || "-createdAt"; 
-           const category = req.query.category;
-           const search = req.query.search;
+    async (req, res) => {
+        console.log(req.query);
 
-       const query = {}
+        const sort = req.query.sort || "-createdAt";
+        const category = req.query.category;
+        const search = req.query.search;
 
-         if(category){
+        const query = {};
+
+        if (category) {
             query.category = category;
-         }
-            if(search){
-                query.title = {$regex:search,$options:"i"}
-            }
+        }
+        if (search) {
+            query.title = { $regex: search, $options: "i" };
+        }
 
         const limit = parseInt(req.query.limit) || 10;
-        if(limit>50 || limit<1){
-            return res.status(400).json({message:"Limit cannot be greater than 50 or less than 1"})
+        if (limit > 50 || limit < 1) {
+            return res.status(400).json({ message: "Limit cannot be greater than 50 or less than 1" });
         }
+
         const page = parseInt(req.query.page) || 1;
-        if(page<1 || isNaN(page)){
-            return res.status(400).json({message:"Page cannot be less than 1"})
+        if (page < 1 || isNaN(page)) {
+            return res.status(400).json({ message: "Page cannot be less than 1" });
         }
-        const skip = (page - 1 )*limit;
-        if(skip<0 || isNaN(skip)){
-            return res.status(400).json({message:"Skip cannot be less than 0"})
+
+        const skip = (page - 1) * limit;
+        if (skip < 0 || isNaN(skip)) {
+            return res.status(400).json({ message: "Skip cannot be less than 0" });
         }
 
         const products = await Product.find(query)
-        .sort(sort)
-        .limit(limit)
-        .skip(skip)
-        
+            .sort(sort)
+            .limit(limit)
+            .skip(skip);
+
         res.status(200).json({
-            message:"Products fetched successfully",
-            data:products
-        })
-
-
-        
-  
-})
-
-export const updateProduct = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
-  const updatedProduct = await Product.findByIdAndUpdate(
-    id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
+            message: "Products fetched successfully",
+            data: products
+        });
     }
-  );
+);
 
-  if (!updatedProduct) {
-    return res.status(404).json({
-      success: false,
-      message: "Product not found",
+export const updateProduct = asynchandeler(async (req, res) => {
+    const { id } = req.params;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+        id,
+        req.body,
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
+
+    if (!updatedProduct) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Product updated successfully",
+        data: updatedProduct,
     });
-  }
-
-  res.status(200).json({
-    success: true,
-    message: "Product updated successfully",
-    data: updatedProduct,
-  });
 });
 
-export const deleteProduct = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const deleteProduct = await Product.findByIdAndDelete(id,
-    {new: true,
-    runValidators: true,}
-    );
-  ;
+export const deleteProduct = asynchandeler(async (req, res) => {
+    const { id } = req.params;
 
-  if (!deleteProduct) {
-    return res.status(404).json({
-      success: false,
-      message: "Product not found",
+    const deletedProduct = await Product.findByIdAndDelete(id);
+
+    if (!deletedProduct) {
+        return res.status(404).json({
+            success: false,
+            message: "Product not found",
+        });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Product deleted successfully",
+        data: deletedProduct,
     });
-  }
-
-  res.status(200).json({
-    success: true,
-    message: "Product deleted successfully",
-    data: deleteProduct,
-  });
-
 });
