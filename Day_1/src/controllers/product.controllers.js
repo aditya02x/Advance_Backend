@@ -29,8 +29,6 @@ export const createProduct = asynchandeler(
 
 export const getAllProducts = asynchandeler(
     async (req, res) => {
-        console.log(req.query);
-
         const sort = req.query.sort || "-createdAt";
         const category = req.query.category;
         const search = req.query.search;
