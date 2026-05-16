@@ -15,7 +15,10 @@ export const createProduct = asynchandeler(
             category,
             stock
         });
-         const keys = await redisClient.keys("products
+         const keys = await redisClient.keys("products*");
+         if(keys.length > 0) {
+            await redisClient.del(keys);
+         }
 
         res.status(201).json({
             message: "Product created successfully",
