@@ -6,12 +6,19 @@ export const createProduct = asynchandeler(
     async (req, res) => {
         const { title, price, category, stock } = req.body;
 
+       
+       
+
         const newProduct = await Product.create({
             title,
             price,
             category,
             stock
         });
+         const keys = await redisClient.keys("products*");
+         if(keys.length > 0) {
+            await redisClient.del(keys);
+         }
 
         res.status(201).json({
             message: "Product created successfully",
