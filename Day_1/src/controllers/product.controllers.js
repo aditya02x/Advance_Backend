@@ -1,5 +1,6 @@
 import Product from '../models/product.model.js';
 import asynchandeler from '../middleware/asynchandler.js';
+import redisClient from '../config/redis.js';
 
 export const createProduct = asynchandeler(
     async (req, res) => {
@@ -51,10 +52,27 @@ export const getAllProducts = asynchandeler(
             return res.status(400).json({ message: "Skip cannot be less than 0" });
         }
 
+        const cachedKey = `products:${JSON.stringify(query)}:sort:${sort}:limit:${limit}:page:${page}`;
+
+        const cachedProduct = await redisClient.get(cachedKey);
+
+        if (cachedProduct) {
+            console.log("Products fetched from Redis");
+            return res.status(200).json({
+                message: "Products fetched successfully (from cache)",
+                data: JSON.parse(cachedProduct)
+            });
+        }
+
         const products = await Product.find(query)
             .sort(sort)
             .limit(limit)
             .skip(skip);
+
+        // Cache the products in Redis for 10 seconds
+        await redisClient.set("products", JSON.stringify(products), {
+            EX: 10
+        });
 
         res.status(200).json({
             message: "Products fetched successfully",
