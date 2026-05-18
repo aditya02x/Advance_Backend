@@ -1,5 +1,5 @@
 import redisClient from "../config/redis.js";
-import asynchandeler from "./asynchandler";
+import asynchandeler from "../middleware/asynchandler.js";
 
 const ratelimiter = asynchandeler(
     async (req, res, next) => {
