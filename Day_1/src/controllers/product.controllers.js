@@ -4,35 +4,35 @@ import redisClient from '../config/redis.js';
 import productQueue from '../queues/product.queue.js';
 
 export const createProduct = asynchandeler(
-    async (req, res) => {
-        const { title, price, category, stock } = req.body;
+  async (req, res) => {
+    const { title, price, category, stock } = req.body;
 
-       
-       
+    const newProduct = await Product.create({
+      title,
+      price,
+      category,
+      stock,
+    });
 
-        const newProduct = await Product.create({
-            title,
-            price,
-            category,
-            stock
-        });
-         const keys = await redisClient.keys("products*");
-         if(keys.length > 0) {
-            await redisClient.del(keys);
-         }
+    // Clear cache
+    const keys = await redisClient.keys("products*");
 
-        res.status(201).json({
-            message: "Product created successfully",
-            data: newProduct
-        });
-
-        await productQueue.add("newProduct", {
-            productId: newProduct._id,
-            title: newProduct.title
-        });
+    if (keys.length > 0) {
+      await redisClient.del(keys);
     }
-);
 
+    // Add background job
+    await productQueue.add("newProduct", {
+      productId: newProduct._id,
+      title: newProduct.title,
+    });
+
+    res.status(201).json({
+      message: "Product created successfully",
+      data: newProduct,
+    });
+  }
+);
 export const getAllProducts = asynchandeler(
     async (req, res) => {
         console.log(req.query);
