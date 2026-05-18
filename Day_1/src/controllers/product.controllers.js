@@ -1,6 +1,7 @@
 import Product from '../models/product.model.js';
 import asynchandeler from '../middleware/asynchandler.js';
 import redisClient from '../config/redis.js';
+import productQueue from '../queues/product.queue.js';
 
 export const createProduct = asynchandeler(
     async (req, res) => {
@@ -23,6 +24,11 @@ export const createProduct = asynchandeler(
         res.status(201).json({
             message: "Product created successfully",
             data: newProduct
+        });
+
+        await productQueue.add("newProduct", {
+            productId: newProduct._id,
+            title: newProduct.title
         });
     }
 );

@@ -6,3 +6,5 @@ const productQueue = new Queue('newproduction', {
         port: 6379
     }
 });
+
+export default productQueue;
