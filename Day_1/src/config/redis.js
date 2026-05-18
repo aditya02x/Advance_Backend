@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 
 const redisClient = createClient({
-  url: "redis://localhost:6379",
+  url: "redis://host.docker.internal:6379",
 });
 
 export default redisClient;

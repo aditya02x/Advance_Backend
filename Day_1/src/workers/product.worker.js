@@ -5,7 +5,7 @@ const productWorker = new Worker("newproduction" ,
          console.log("Job received" , job.name);
         console.log("Processing job" , job.data);
 
-        console.log(`processing product :`$(job.data.title));
+        console.log(`processing product : ${job.data.title}`);
      } ,
      {
         connection:{

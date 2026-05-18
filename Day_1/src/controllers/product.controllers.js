@@ -1,5 +1,5 @@
 import Product from '../models/product.model.js';
-import asyncHandler from '../middleware/asyncHandler.js';
+import asyncHandler from '../middleware/asynchandler.js';
 import redisClient from '../config/redis.js';
 import productQueue from '../queues/product.queue.js';
 
