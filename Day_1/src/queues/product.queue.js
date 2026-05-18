@@ -1,6 +1,6 @@
 import {Queue} from 'bullmq';
 
-const newProductQueue = new Queue('newproduction', {
+const productQueue = new Queue('newproduction', {
     connection: {
         host: 'localhost',
         port: 6379
